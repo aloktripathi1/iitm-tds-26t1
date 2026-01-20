@@ -23,7 +23,7 @@ Set up a local AI server using Ollama and expose it to the internet via ngrok wi
 Download and install Ollama to run AI models locally on your machine.
 
 ### 2. Download AI Model
-Pull a lightweight model suitable for your system's memory constraints.
+Pull a lightweight model suitable for running inference locally.
 
 ### 3. Configure CORS
 Set environment variable to allow cross-origin requests before starting the server.
@@ -42,36 +42,24 @@ Test the public URL to ensure proper connectivity and header injection.
 
 ---
 
-## Installation Steps
+## Installation
 
 ### Install Ollama
 
 **Download:**
-Visit [ollama.com/download](https://ollama.com/download) and download the Windows installer.
+```
+Visit: https://ollama.com/download
+Download the installer for your operating system
+```
 
 **Verify Installation:**
 ```powershell
 ollama --version
 ```
 
-**Expected Output:**
-```
-ollama version is 0.13.5
-```
-
 ### Download AI Model
 
-**Initial Attempt (Failed - Memory Issue):**
-```powershell
-ollama pull gemma3:1b-it-qat
-```
-
-**Error:**
-```
-Error: 500 Internal Server Error: model requires more system memory (1.6 GiB) than is available (1.3 GiB)
-```
-
-**Solution - Use Smaller Model:**
+**Pull Model:**
 ```powershell
 ollama pull qwen2.5:0.5b
 ```
@@ -81,50 +69,36 @@ ollama pull qwen2.5:0.5b
 ollama list
 ```
 
-**Output:**
+**Expected Output:**
 ```
 NAME                ID              SIZE      MODIFIED
 qwen2.5:0.5b        a8b0c5157701    397 MB    2 minutes ago
 ```
 
-**Test Model:**
-```powershell
-ollama run qwen2.5:0.5b "What is 2+2?"
-```
-
-**Output:**
-```
-When you ask me "What is 2 + 2?", I can only provide an exact numeric answer to your question.
-2 + 2 = 4
-...
-```
-
 ### Install ngrok
 
 **Download:**
-Visit [ngrok.com/download](https://ngrok.com/download) and download Windows version.
-
-**Extract:**
-Extract `ngrok.exe` to `C:\ngrok\`
+```
+Visit: https://ngrok.com/download
+Extract ngrok executable to a folder (e.g., C:\ngrok\)
+```
 
 **Get Authtoken:**
-Sign up at [ngrok.com](https://ngrok.com) and get authtoken from [dashboard](https://dashboard.ngrok.com/get-started/your-authtoken)
+```
+Sign up at: https://ngrok.com
+Get authtoken from: https://dashboard.ngrok.com/get-started/your-authtoken
+```
 
 **Configure ngrok:**
 ```powershell
-C:\ngrok\ngrok.exe config add-authtoken 38VKzJPdTrJpw2VZO5akwB2cdWN_PbXWeF6xwmp4DSkt74gW
-```
-
-**Output:**
-```
-Authtoken saved to configuration file: C:\Users\...\ngrok.yml
+ngrok config add-authtoken YOUR_AUTHTOKEN_HERE
 ```
 
 ---
 
 ## Execution
 
-### Start Ollama Server (Terminal Window 1)
+### Step 1: Start Ollama Server (Terminal Window 1)
 
 **Set CORS Environment Variable:**
 ```powershell
@@ -136,48 +110,28 @@ $env:OLLAMA_ORIGINS="*"
 ollama serve
 ```
 
-**Issue Encountered:**
-```
-Error: listen tcp 127.0.0.1:11434: bind: Only one usage of each socket address (protocol/network address/port) is normally permitted.
-```
-
-**Cause:** Ollama was already running as a background service.
-
-**Solution:** Use the existing running instance. Verify it works:
-```powershell
-curl http://localhost:11434/api/tags -UseBasicParsing
-```
-
 **Expected Output:**
 ```
-StatusCode        : 200
-Content           : {"models":[{"name":"qwen2.5:0.5b","model":"qwen2.5:0.5b",...}]}
+Ollama is running on 127.0.0.1:11434
 ```
 
-### Start ngrok Tunnel (Terminal Window 2)
+**Note:** Keep this terminal window open.
+
+### Step 2: Start ngrok Tunnel (Terminal Window 2)
 
 **Create Public Tunnel:**
 ```powershell
-C:\ngrok\ngrok.exe http 11434 --response-header-add "X-Email: 23f3003225@ds.study.iitm.ac.in" --response-header-add "Access-Control-Expose-Headers: *" --response-header-add "Access-Control-Allow-Headers: Ngrok-skip-browser-warning" --host-header=localhost
+ngrok http 11434 --response-header-add "X-Email: 23f3003225@ds.study.iitm.ac.in" --response-header-add "Access-Control-Expose-Headers: *" --response-header-add "Access-Control-Allow-Headers: Ngrok-skip-browser-warning" --host-header=localhost
 ```
 
 **Expected Output:**
 ```
-ngrok                                                                         (Ctrl+C to quit)
-
 Session Status                online
 Account                       23f3003225@ds.study.iitm.ac.in (Plan: Free)
-Version                       3.35.0
-Region                        India (in)
-Latency                       43ms
-Web Interface                 http://127.0.0.1:4040
-Forwarding                    https://lanate-kareen-photostatically.ngrok-free.dev -> http://localhost:11434
-
-Connections                   ttl     opn     rt1     rt5     p50     p90
-                              0       0       0.00    0.00    0.00    0.00
+Forwarding                    https://random-string.ngrok-free.app -> http://localhost:11434
 ```
 
-**Note:** Keep this terminal window open throughout the session.
+**Note:** Keep this terminal window open as well.
 
 ---
 
@@ -185,9 +139,8 @@ Connections                   ttl     opn     rt1     rt5     p50     p90
 
 ### Test Local Connection
 
-**Check Ollama Locally:**
 ```powershell
-curl http://localhost:11434/api/version -UseBasicParsing
+curl http://localhost:11434/api/version
 ```
 
 **Expected Response:**
@@ -197,9 +150,8 @@ curl http://localhost:11434/api/version -UseBasicParsing
 
 ### Test Public URL
 
-**Check ngrok Tunnel:**
 ```powershell
-curl https://lanate-kareen-photostatically.ngrok-free.dev/api/version -UseBasicParsing
+curl https://YOUR-NGROK-URL.ngrok-free.app/api/version
 ```
 
 **Expected Response:**
@@ -207,93 +159,77 @@ curl https://lanate-kareen-photostatically.ngrok-free.dev/api/version -UseBasicP
 {"version":"0.5.8"}
 ```
 
-### Monitor Connections
-
-**ngrok Interface Shows Activity:**
-```
-HTTP Requests
--------------
-09:26:35.000 IST OPTIONS /api/version           204 No Content
-09:26:35.366 IST OPTIONS /api/version           204 No Content
-```
-
-These OPTIONS requests are CORS preflight checks from the grading system, confirming proper setup.
-
 ---
 
-## Common Issues and Solutions
+## Common Issues
 
-### Issue 1: Memory Constraints
-
-**Problem:**
-```
-Error: model requires more system memory (1.6 GiB) than is available (1.3 GiB)
-```
-
-**Cause:** The `gemma3:1b-it-qat` model requires 1.6 GB RAM but only 1.3 GB was available.
-
-**Solution:**
-Switch to a smaller model:
-```powershell
-ollama pull qwen2.5:0.5b  # Only ~400 MB
-```
-
-**Available Models by Size:**
-* `qwen2.5:0.5b` - 397 MB (recommended for <2 GB RAM)
-* `gemma3:1b-it-qat` - 1.0 GB (requires ~1.6 GB RAM)
-* `llama3` - Larger models (requires 4+ GB RAM)
-
-### Issue 2: Port Already in Use
+### Issue 1: Port Already in Use
 
 **Problem:**
 ```
-Error: listen tcp 127.0.0.1:11434: bind: Only one usage of each socket address (protocol/network address/port) is normally permitted.
+Error: listen tcp 127.0.0.1:11434: bind: address already in use
 ```
 
 **Cause:** Ollama is already running as a background service.
 
 **Solution:**
-The server is already running. Either:
-* Use the existing instance (proceed to ngrok setup)
-* Stop the service via Task Manager (`Ctrl+Shift+Esc` → End "Ollama" task) and restart with CORS enabled
+* Option 1: Use the existing instance (skip `ollama serve` and proceed to ngrok)
+* Option 2: Stop the existing service and restart with CORS enabled
 
-### Issue 3: CORS Headers Missing
+### Issue 2: CORS Not Configured
 
-**Problem:** Assignment checker reports CORS errors or "Failed to fetch".
+**Problem:** Assignment checker reports CORS errors.
 
-**Cause:** `OLLAMA_ORIGINS` environment variable not set before starting Ollama.
-
-**Solution:**
-1. Stop Ollama (Task Manager → End Task on "Ollama")
-2. In PowerShell: `$env:OLLAMA_ORIGINS="*"`
-3. Start Ollama: `ollama serve`
-4. **Critical:** Set the variable in the same PowerShell session before running `ollama serve`
-
-### Issue 4: PowerShell Header Syntax Error
-
-**Problem:**
-```
-Cannot bind parameter 'Headers'. Cannot convert the "ngrok-skip-browser-warning: true" value...
-```
-
-**Cause:** Bash-style `-H` flag doesn't work in PowerShell.
+**Cause:** `OLLAMA_ORIGINS` environment variable not set.
 
 **Solution:**
-Use PowerShell syntax:
-```powershell
-curl https://YOUR-URL.ngrok-free.app/api/version -Headers @{"ngrok-skip-browser-warning"="true"} -UseBasicParsing
-```
+Ensure `$env:OLLAMA_ORIGINS="*"` is set **before** running `ollama serve` in the same terminal session.
 
-Or test without the header:
-```powershell
-curl https://YOUR-URL.ngrok-free.app/api/version -UseBasicParsing
-```
+### Issue 3: ngrok Cannot Connect
+
+**Problem:** Testing ngrok URL returns HTML error page instead of JSON.
+
+**Cause:** Ollama server not running or not accessible.
+
+**Solution:**
+1. Verify Ollama is running: `curl http://localhost:11434/api/version`
+2. Ensure ngrok command includes `--host-header=localhost` flag
+3. Check both terminal windows are still open
 
 ---
 
-## Implementation Details
+## Configuration Details
 
-### Architecture
+### CORS Setup
+
+```powershell
+$env:OLLAMA_ORIGINS="*"
+```
+Allows requests from any origin, enabling browser-based access.
+
+### ngrok Flags Explained
+
+* `--response-header-add "X-Email: ..."` - Identifies submission for grading
+* `--response-header-add "Access-Control-Expose-Headers: *"` - Allows JavaScript to read all response headers
+* `--response-header-add "Access-Control-Allow-Headers: Ngrok-skip-browser-warning"` - Permits custom header to bypass ngrok browser warning
+* `--host-header=localhost` - Ensures Ollama sees requests as from localhost (prevents 403 errors)
+
+---
+
+## Submission
+
+**Your Public URL:**
+```
+https://random-string.ngrok-free.app
+```
+
+Copy the HTTPS forwarding URL from ngrok and submit it to the assignment platform.
+
+**Important:** Keep both terminal windows (Ollama and ngrok) running until grading is complete.
+
+---
+
+## Architecture
 
 **Request Flow:**
 ```
@@ -302,92 +238,23 @@ Internet → ngrok Tunnel → localhost:11434 → Ollama Server
 
 **Response Flow:**
 ```
-Ollama Server → ngrok (injects headers) → Internet
+Ollama Server → ngrok (injects custom headers) → Internet
 ```
 
-### Tools
-
-* **Ollama:** Local LLM server for running AI models
-* **ngrok:** Secure tunnel service for exposing localhost to internet
-* **Model:** qwen2.5:0.5b (397 MB, lightweight alternative to gemma3:1b-it-qat)
-
-### Configuration Parameters
-
-**CORS Configuration:**
-* `OLLAMA_ORIGINS="*"` - Allows requests from any origin
-* Essential for web browser access and grading system
-
-**ngrok Flags:**
-* `--response-header-add "X-Email: 23f3003225@ds.study.iitm.ac.in"` - Identifies submission for grading
-* `--response-header-add "Access-Control-Expose-Headers: *"` - Allows JavaScript to read all headers
-* `--response-header-add "Access-Control-Allow-Headers: Ngrok-skip-browser-warning"` - Permits custom header to bypass ngrok warning page
-* `--host-header=localhost` - Ensures Ollama sees requests as from localhost (prevents 403 errors)
-
-### Why Each Component is Needed
-
-**CORS (Cross-Origin Resource Sharing):**
-Allows web browsers to make requests from different domains. Without it, browsers block the requests due to security policies.
-
-**Custom Headers:**
-* `X-Email`: Identifies your submission for the grading system
-* CORS headers: Enable browser-based access to the API
-* `host-header=localhost`: Prevents Ollama from rejecting proxied requests
-
-**ngrok:**
-Creates a secure HTTPS tunnel so the grading system can access your local Ollama instance without exposing your entire network.
-
-**Smaller Model:**
-Using `qwen2.5:0.5b` instead of `gemma3:1b-it-qat` allows the setup to work on systems with limited RAM (< 2 GB available).
-
----
-
-## Submission
-
-**Copy Your ngrok URL:**
-```
-https://lanate-kareen-photostatically.ngrok-free.dev
-```
-
-**Submit:**
-Paste the HTTPS forwarding URL into the assignment submission box.
-
-**Keep Running:**
-Both Ollama and ngrok must remain running until grading is complete.
-
----
-
-## Clean Up
-
-**Stop Services:**
-Press `Ctrl+C` in the ngrok terminal window.
-
-**Stop Ollama:**
-Task Manager (`Ctrl+Shift+Esc`) → End "Ollama" task
-
-**Uninstall Ollama (Optional):**
-Windows Settings → Apps → Add or Remove Programs → Ollama → Uninstall
-
-**Remove Model Files (Optional):**
-```powershell
-Remove-Item -Recurse -Force "$env:USERPROFILE\.ollama"
-```
-This frees up ~400 MB of disk space.
-
-**Remove ngrok (Optional):**
-```powershell
-Remove-Item -Recurse -Force "C:\ngrok"
-```
+**Components:**
+* **Ollama** - Local LLM server running AI models
+* **ngrok** - Secure tunnel service exposing localhost to internet
+* **CORS** - Enables cross-origin browser requests
+* **Custom Headers** - Tracks and verifies submissions
 
 ---
 
 ## Summary
 
-This setup demonstrates:
-* Running local AI models with Ollama (using qwen2.5:0.5b for memory efficiency)
-* Exposing local servers securely to the internet with ngrok
-* Configuring CORS for web API access
-* Injecting custom HTTP headers for verification
-* Managing environment variables for service configuration
-* Troubleshooting memory constraints by selecting appropriate model sizes
+This setup demonstrates how to:
+* Run AI models locally with Ollama
+* Expose local services securely via ngrok
+* Configure CORS for web API access
+* Inject custom HTTP headers for tracking
 
-**Final Result:** A publicly accessible AI API endpoint (`https://lanate-kareen-photostatically.ngrok-free.dev`) running the qwen2.5:0.5b model on your local machine, accessible from anywhere on the internet with proper CORS and custom headers.
+**Result:** A publicly accessible AI API endpoint running entirely on your local machine with proper security and verification headers.
