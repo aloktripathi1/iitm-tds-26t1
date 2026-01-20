@@ -61,7 +61,7 @@ ollama --version
 
 **Pull Model:**
 ```powershell
-ollama pull qwen2.5:0.5b
+ollama pull llama3
 ```
 
 **Verify Model:**
@@ -72,7 +72,7 @@ ollama list
 **Expected Output:**
 ```
 NAME                ID              SIZE      MODIFIED
-qwen2.5:0.5b        a8b0c5157701    397 MB    2 minutes ago
+llama3:latest       a6990ed6be41    4.7 GB    2 minutes ago
 ```
 
 ### Install ngrok
@@ -121,13 +121,13 @@ Ollama is running on 127.0.0.1:11434
 
 **Create Public Tunnel:**
 ```powershell
-ngrok http 11434 --response-header-add "X-Email: 23f3003225@ds.study.iitm.ac.in" --response-header-add "Access-Control-Expose-Headers: *" --response-header-add "Access-Control-Allow-Headers: Ngrok-skip-browser-warning" --host-header=localhost
+ngrok http 11434 --response-header-add "X-Email: 23f300XXXX@ds.study.iitm.ac.in" --response-header-add "Access-Control-Expose-Headers: *" --response-header-add "Access-Control-Allow-Headers: Ngrok-skip-browser-warning" --host-header=localhost
 ```
 
 **Expected Output:**
 ```
 Session Status                online
-Account                       23f3003225@ds.study.iitm.ac.in (Plan: Free)
+Account                       23f300XXXX@ds.study.iitm.ac.in (Plan: Free)
 Forwarding                    https://random-string.ngrok-free.app -> http://localhost:11434
 ```
 
@@ -258,3 +258,4 @@ This setup demonstrates how to:
 * Inject custom HTTP headers for tracking
 
 **Result:** A publicly accessible AI API endpoint running entirely on your local machine with proper security and verification headers.
+
