@@ -1,0 +1,62 @@
+[
+  {
+    "id": 0,
+    "title": "Authentication Overview",
+    "content": "All API requests require authentication using API keys. Include your API key in the Authorization header as a Bearer token. Example: Authorization: Bearer YOUR_API_KEY",
+    "source": "auth.md"
+  },
+  {
+    "id": 1,
+    "title": "Getting Started",
+    "content": "To get started with our API, first create an account and generate an API key from the dashboard. Then make your first request to the /health endpoint to verify connectivity.",
+    "source": "quickstart.md"
+  },
+  {
+    "id": 2,
+    "title": "Rate Limiting",
+    "content": "API requests are rate limited to 100 requests per minute per API key. When you exceed this limit, you'll receive a 429 status code. Use exponential backoff for retries.",
+    "source": "limits.md"
+  },
+  {
+    "id": 3,
+    "title": "Error Handling",
+    "content": "Our API returns standard HTTP status codes. 200 for success, 400 for bad requests, 401 for authentication errors, 404 for not found, and 500 for server errors. All errors include a JSON body with an error message.",
+    "source": "errors.md"
+  },
+  {
+    "id": 4,
+    "title": "Webhook Configuration",
+    "content": "Set up webhooks to receive real-time notifications about events. Configure webhook URLs in your dashboard and specify which events to subscribe to. Webhooks are signed for security.",
+    "source": "webhooks.md"
+  },
+  {
+    "id": 5,
+    "title": "Data Export",
+    "content": "Export your data using the /export endpoint. Supports JSON and CSV formats. Large exports are processed asynchronously and you'll receive a download link via email.",
+    "source": "export.md"
+  },
+  {
+    "id": 6,
+    "title": "API Versioning",
+    "content": "Our API uses versioning in the URL path. Current version is v1. Example: https://api.example.com/v1/users. We maintain backward compatibility for at least 12 months after deprecation.",
+    "source": "versioning.md"
+  },
+  {
+    "id": 7,
+    "title": "User Management",
+    "content": "Create, update, and delete users via the /users endpoint. Supports pagination, filtering, and sorting. User objects include id, email, name, created_at, and custom metadata fields.",
+    "source": "users.md"
+  },
+  {
+    "id": 8,
+    "title": "Search API",
+    "content": "Perform full-text search across your data using the /search endpoint. Supports filters, faceting, and highlighting. Results are ranked by relevance and can be sorted by various fields.",
+    "source": "search.md"
+  },
+  {
+    "id": 9,
+    "title": "Batch Operations",
+    "content": "Process multiple operations in a single request using the /batch endpoint. Supports batch creation, updates, and deletions. Maximum batch size is 1000 items per request.",
+    "source": "batch.md"
+  }
+]
