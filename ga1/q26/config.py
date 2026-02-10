@@ -1,0 +1,7 @@
+CACHE_MAX_SIZE = 1500
+CACHE_TTL_SECONDS = 20  # 20 seconds to allow re-testing without stale cache
+
+EMBEDDING_SIM_THRESHOLD = 0.95
+
+MODEL_COST_PER_1M_TOKENS = 1.0
+AVG_TOKENS_PER_REQUEST = 3000
