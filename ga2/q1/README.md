@@ -6,7 +6,7 @@ Compress `q-image-compression-dynamic.webp` losslessly to less than 400 bytes.
 ## Steps Taken
 
 1.  **Analysis**:
-    -   Downloaded the original image (`original.webp`, ~29KB).
+    -   Downloaded the original image (`original.png`, ~29KB).
     -   Found it uses only a few unique colors (< 256).
 
 2.  **Compression Strategy**:
@@ -24,3 +24,4 @@ Run the script to reproduce:
 ```bash
 python compress_image.py
 ```
+
