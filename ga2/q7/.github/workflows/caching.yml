@@ -1,0 +1,26 @@
+name: Caching Primes
+
+on: [push, workflow_dispatch]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Cache Primes
+      id: cache-primes
+      uses: actions/cache@v4
+      with:
+        path: prime-numbers
+        key: cache-d18a326
+
+    - name: Generate Prime Numbers
+      if: steps.cache-primes.outputs.cache-hit != 'true'
+      run: |
+        mkdir -p prime-numbers
+        echo "2, 3, 5, 7, 11, 13, 17, 19, 23, 29" > prime-numbers/primes.txt
+
+    - name: prime-cache-d18a326
+      run: echo "Cache hit ${{ steps.cache-primes.outputs.cache-hit }}"
